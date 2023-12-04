@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Login from "./Login";
 
 const originalMovies = [
   {
@@ -46,6 +47,7 @@ const originalMovies = [
 ];
 
 function MoviesList() {
+  const [userType, setUserType] = useState("guest");
   const [movies, setMovies] = useState(originalMovies);
   const [editIndex, setEditIndex] = useState(null);
   const [newMovie, setNewMovie] = useState({
@@ -53,6 +55,14 @@ function MoviesList() {
     actors: [],
     releaseYear: "",
   });
+
+  const handleLogin = (user) => {
+    setUserType(user);
+  };
+
+  const handleLogout = () => {
+    setUserType("guest");
+  };
 
   const handleDelete = (index) => {
     const updatedMovies = [...movies];
@@ -84,50 +94,65 @@ function MoviesList() {
 
   return (
     <div>
-      <main>
-        <h1>Movies List</h1>
-        <ul>
-          {movies.map((movie, index) => (
-            <li key={index}>
-              <h2>Title: {movie.title}</h2>
-              <p>Actors: {movie.actors.join(", ")}</p>
-              <p>Release Year: {movie.releaseYear}</p>
-              <button onClick={() => handleEdit(index)}>Edit</button>
-              <button onClick={() => handleDelete(index)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-        <div>
-          <h2>{editIndex !== null ? "Edit Movie" : "Add Movie"}</h2>
-          <input
-            type="text"
-            placeholder="Title"
-            value={newMovie.title}
-            onChange={(e) =>
-              setNewMovie({ ...newMovie, title: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            placeholder="Actors (comma-separated)"
-            value={newMovie.actors.join(", ")}
-            onChange={(e) =>
-              setNewMovie({ ...newMovie, actors: e.target.value.split(", ") })
-            }
-          />
-          <input
-            type="text"
-            placeholder="Release Year"
-            value={newMovie.releaseYear}
-            onChange={(e) =>
-              setNewMovie({ ...newMovie, releaseYear: e.target.value })
-            }
-          />
-          <button onClick={handleSave}>
-            {editIndex !== null ? "Save" : "Add"}
-          </button>
-        </div>
-      </main>
+      {userType === "guest" ? (
+        <Login handleLogin={handleLogin} />
+      ) : (
+        <main>
+          <h1>Movies List</h1>
+          <ul>
+            {movies.map((movie, index) => (
+              <li key={index}>
+                <h2>Title: {movie.title}</h2>
+                <p>Actors: {movie.actors.join(", ")}</p>
+                <p>Release Year: {movie.releaseYear}</p>
+                {userType === "admin" && (
+                  <div>
+                    <button onClick={() => handleEdit(index)}>Edit</button>
+                    <button onClick={() => handleDelete(index)}>Delete</button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          {userType === "admin" && (
+            <div>
+              <h2>{editIndex !== null ? "Edit Movie" : "Add Movie"}</h2>
+              <input
+                type="text"
+                placeholder="Title"
+                value={newMovie.title}
+                onChange={(e) =>
+                  setNewMovie({ ...newMovie, title: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Actors (comma-separated)"
+                value={newMovie.actors.join(", ")}
+                onChange={(e) =>
+                  setNewMovie({
+                    ...newMovie,
+                    actors: e.target.value.split(", "),
+                  })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Release Year"
+                value={newMovie.releaseYear}
+                onChange={(e) =>
+                  setNewMovie({ ...newMovie, releaseYear: e.target.value })
+                }
+              />
+              <button onClick={handleSave}>
+                {editIndex !== null ? "Save" : "Add"}
+              </button>
+            </div>
+          )}
+          <h2>Logout</h2>
+          <button onClick={handleLogout}>Logout</button>
+        </main>
+      )}
     </div>
   );
 }
