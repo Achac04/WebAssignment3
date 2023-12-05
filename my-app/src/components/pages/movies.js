@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Login from "./Login";
 
 const originalMovies = [
   {
@@ -95,7 +94,7 @@ function MoviesList() {
   return (
     <div>
       {userType === "guest" ? (
-        <Login handleLogin={handleLogin} />
+        <h2>Normal user</h2>
       ) : (
         <main>
           <h1>Movies List</h1>

@@ -1,4 +1,4 @@
-import MoviesList from "@/components/pages/movies";
+import MoviesList from "@/components/pages/Movies";
 
 export default function Home() {
   return (
